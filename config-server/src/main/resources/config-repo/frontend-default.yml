@@ -4,6 +4,23 @@ spring:
     port: 5672
     username: guest
     password: guest
+
+  security:
+    oauth2:
+      client:
+        provider:
+          keycloak:
+            issuer-uri: http://localhost:8082/realms/bank
+            token-uri: http://localhost:8082/realms/bank/protocol/openid-connect/token
+        registration:
+          yandex:
+            provider: keycloak
+            authorizationGrantType: client_credentials
+            client-id: frontend
+            client-secret: Udyd28MFJcB8XuBpAmI1fVI7PilNtNjH
+            scope: profile
+            clientAuthenticationMethod: client_secret_post
+
 management:
   endpoints:
     web:
