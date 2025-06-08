@@ -11,9 +11,11 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="config-server.test" target="21" />
       <module name="eureka-service" target="21" />
       <module name="eureka-service.main" target="21" />
       <module name="eureka-service.test" target="21" />
+      <module name="gateway.test" target="21" />
       <module name="template-application" target="21" />
       <module name="template-application.main" target="21" />
       <module name="template-application.test" target="21" />
