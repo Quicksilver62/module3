@@ -1,0 +1,31 @@
+spring:
+  cloud:
+    discovery:
+      client:
+        simple:
+          instances:
+            b-service: # Мы не используем Service Discovery, поэтому перечислим хосты самостоятельно
+              - uri: http://127.0.0.1:8090
+    gateway:
+      server:
+        webflux:
+          routes:
+            - id: b-service-route  # ID роута
+              uri: lb://b-service  # URI микросервиса, на который следует перенаправлять запрос
+              predicates:
+                - Path=/api/hello
+              filters:
+                - TokenRelay=gateway-client
+  security:
+    oauth2:
+      client:
+        provider:
+          keycloak:
+            token-uri: http://localhost:8082realms/demo/protocol/openid-connect/token
+        registration:
+          gateway-client:
+            provider: keycloak
+            client-id: serviceB        # ID зарегистрированного клиента
+            client-secret: vOc4xRz8KDekzeVSE7kYAsFdau5vW5PP
+            scope: resource.read
+            authorization-grant-type: client_credentials

@@ -1,0 +1,10 @@
+spring:
+  application:
+    name: serviceB
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: http://localhost:8082/realms/demo/protocol/openid-connect/certs
+server:
+  port: 8090
