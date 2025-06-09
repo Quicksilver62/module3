@@ -97,6 +97,27 @@
         </form>
     </td></tr>
     <tr><td style="padding:2px;">
+        <form method="post" th:action="${'/user/'+login+'/account'}">
+            <table style="width:100%;margin-left:auto;margin-right:auto;border-radius:2%;padding:10px;background-color:whitesmoke;">
+                <tr th:if="${cashErrors!=null}" th:each="cashError : ${cashErrors}">
+                    <td style="color:red;" th:text="${cashError}"/>
+                </tr>
+                <tr>
+                    <td style="font-weight:bold;">Открыть счет</td>
+                    <td>
+                        Валюта
+                        <select name="currency">
+                            <option th:each="eachCurrency : ${currency}" th:value="${eachCurrency.name()}" th:text="${eachCurrency.getTitle()}"/>
+                        </select>
+                    </td>
+                    <td style="text-align:right">
+                        <button>Создать</button>
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </td></tr>
+    <tr><td style="padding:2px;">
         <form method="post" th:action="${'/user/'+login+'/сash'}">
             <table style="width:100%;margin-left:auto;margin-right:auto;border-radius:2%;padding:10px;background-color:whitesmoke;">
                 <tr th:if="${cashErrors!=null}" th:each="cashError : ${cashErrors}">

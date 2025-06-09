@@ -1,19 +1,19 @@
 package ru.yandex.practicum.frontend.controller;
 
-import org.springframework.format.annotation.DateTimeFormat;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.frontend.enums.Currency;
-
-import java.time.LocalDate;
-import java.util.List;
+import ru.yandex.practicum.frontend.service.AccountService;
 
 @Controller
-//@RequestMapping("/user/{login}")
+@RequiredArgsConstructor
 public class MainController {
+
+    private final AccountService accountService;
 
     @GetMapping
     public String mainPage(Model model, OAuth2AuthenticationToken authentication) {
@@ -26,6 +26,9 @@ public class MainController {
         model.addAttribute("login", username);
         model.addAttribute("name", name);
         model.addAttribute("birthdate", birthdate);
+        model.addAttribute("currency", Currency.values());
+
+        var accounts = accountService.getAccounts(username);
 
         return "main";
     }

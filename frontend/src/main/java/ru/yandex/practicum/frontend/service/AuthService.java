@@ -9,7 +9,7 @@ import org.keycloak.admin.client.KeycloakBuilder;
 import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.frontend.configuration.KeycloakProperties;
+import ru.yandex.practicum.frontend.config.KeycloakProperties;
 
 import java.time.LocalDate;
 import java.util.ArrayList;

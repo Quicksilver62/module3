@@ -33,6 +33,7 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
 	implementation("org.springframework.cloud:spring-cloud-starter-bootstrap")
 	implementation("org.keycloak:keycloak-admin-client:26.0.5")
+	implementation("org.springframework.cloud:spring-cloud-starter-openfeign:4.3.0")
 
 	compileOnly("org.projectlombok:lombok")
 

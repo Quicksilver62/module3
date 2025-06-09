@@ -13,9 +13,9 @@ public class RateController {
     public List<Rate> getRates() {
         // TODO Здесь должна быть логика получения курсов валют
         return List.of(
+                new Rate("Рубль", "RUB", 1),
                 new Rate("Доллар США", "USD", 75.50),
-                new Rate("Евро", "EUR", 85.30),
-                new Rate("Фунт стерлингов", "GBP", 95.20)
+                new Rate("Юань", "CNY", 11.20)
         );
     }
 }

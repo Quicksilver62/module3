@@ -1,4 +1,4 @@
-package ru.yandex.practicum.frontend.enums;
+package ru.yandex.practicum.accountservice.enums;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
