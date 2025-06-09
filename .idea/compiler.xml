@@ -16,6 +16,16 @@
       <module name="eureka-service.main" target="21" />
       <module name="eureka-service.test" target="21" />
       <module name="gateway.test" target="21" />
+      <module name="property-printer" target="21" />
+      <module name="property-printer.main" target="21" />
+      <module name="property-printer.test" target="21" />
+      <module name="serviceA" target="21" />
+      <module name="serviceA.main" target="21" />
+      <module name="serviceA.test" target="21" />
+      <module name="serviceB" target="21" />
+      <module name="serviceB.contractTest" target="21" />
+      <module name="serviceB.main" target="21" />
+      <module name="serviceB.test" target="21" />
       <module name="template-application" target="21" />
       <module name="template-application.main" target="21" />
       <module name="template-application.test" target="21" />

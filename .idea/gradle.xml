@@ -36,31 +36,6 @@
           </set>
         </option>
       </GradleProjectSettings>
-      <GradleProjectSettings>
-        <option name="externalProjectPath" value="$PROJECT_DIR$/property-printer" />
-        <option name="gradleJvm" value="21" />
-        <option name="modules">
-          <set>
-            <option value="$PROJECT_DIR$/property-printer" />
-          </set>
-        </option>
-      </GradleProjectSettings>
-      <GradleProjectSettings>
-        <option name="externalProjectPath" value="$PROJECT_DIR$/serviceA" />
-        <option name="modules">
-          <set>
-            <option value="$PROJECT_DIR$/serviceA" />
-          </set>
-        </option>
-      </GradleProjectSettings>
-      <GradleProjectSettings>
-        <option name="externalProjectPath" value="$PROJECT_DIR$/serviceB" />
-        <option name="modules">
-          <set>
-            <option value="$PROJECT_DIR$/serviceB" />
-          </set>
-        </option>
-      </GradleProjectSettings>
     </option>
   </component>
 </project>
