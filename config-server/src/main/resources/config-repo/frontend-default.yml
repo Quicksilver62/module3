@@ -11,23 +11,18 @@ spring:
         provider:
           keycloak:
             issuer-uri: http://localhost:8082/realms/bank
-            authorization-uri: http://localhost:8082/realms/bank/protocol/openid-connect/auth
-            token-uri: http://localhost:8082/realms/bank/protocol/openid-connect/token
-            user-info-uri: http://localhost:8082/realms/bank/protocol/openid-connect/userinfo
-            jwk-set-uri: http://localhost:8082/realms/bank/protocol/openid-connect/certs
         registration:
-          frontend:
-            provider: keycloak
+          keycloak:
             authorization-grant-type: authorization_code
             client-id: frontend
             client-secret: Udyd28MFJcB8XuBpAmI1fVI7PilNtNjH
+            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
             scope:
               - profile
               - openid
               - view_all
               - microprofile-jwt
-            client-authentication-method: client_secret_post
-            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+
 
 keycloak:
   auth-server-url: http://localhost:8082

@@ -1,6 +1,8 @@
 package ru.yandex.practicum.frontend.controller;
 
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -10,8 +12,23 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Controller
-@RequestMapping("/user/{login}")
+//@RequestMapping("/user/{login}")
 public class MainController {
+
+    @GetMapping
+    public String mainPage(Model model, OAuth2AuthenticationToken authentication) {
+        OAuth2User principal = authentication.getPrincipal();
+
+        String username = principal.getAttribute("preferred_username");
+        String name = principal.getAttribute("name");
+        String birthdate = principal.getAttribute("birthdate");
+
+        model.addAttribute("login", username);
+        model.addAttribute("name", name);
+        model.addAttribute("birthdate", birthdate);
+
+        return "main";
+    }
 
 //    @GetMapping
 //    public String getUserPage(@PathVariable String login, Model model) {

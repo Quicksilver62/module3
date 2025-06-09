@@ -1,7 +1,5 @@
 package ru.yandex.practicum.frontend.controller;
 
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.ws.rs.core.Response;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -47,7 +45,10 @@ public class AuthController {
             Response response = authService.keycloakSignUp(login, password, name, birthdate);
 
             if (response.getStatus() == 201) {
-                return "redirect:/login?registration_success";
+                model.addAttribute("login", login);
+                model.addAttribute("name", name);
+                model.addAttribute("birthdate", birthdate);
+                return "main";
             } else {
                 errors.add("Ошибка регистрации: " + response.getStatusInfo().getReasonPhrase());
                 model.addAttribute("errors", errors);
@@ -58,11 +59,5 @@ public class AuthController {
             model.addAttribute("errors", errors);
             return "signup";
         }
-    }
-
-    @GetMapping("/logout")
-    public String logout(HttpServletRequest request) throws ServletException {
-        request.logout();
-        return "redirect:/login";
     }
 }
