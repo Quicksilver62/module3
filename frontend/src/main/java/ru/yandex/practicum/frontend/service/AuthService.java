@@ -30,7 +30,7 @@ public class AuthService {
     public void init() {
         this.keycloak = KeycloakBuilder.builder()
                 .serverUrl(keycloakProperties.getAuthServerUrl())
-                .realm(keycloakProperties.getRealm())
+                .realm(keycloakProperties.getAdmin().getRealm())
                 .grantType(OAuth2Constants.PASSWORD)
                 .clientId(keycloakProperties.getAdmin().getClientId())
                 .username(keycloakProperties.getAdmin().getUsername())
@@ -100,8 +100,6 @@ public class AuthService {
         Map<String, List<String>> attributes = new HashMap<>();
         attributes.put("birthdate", List.of(birthdate));
         user.setAttributes(attributes);
-
-        System.out.println("Access Token: " + keycloak.tokenManager().getAccessToken().getToken());
 
         return keycloak.realm(keycloakProperties.getRealm()).users().create(user);
     }

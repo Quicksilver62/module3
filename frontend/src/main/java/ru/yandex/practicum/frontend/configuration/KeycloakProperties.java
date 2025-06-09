@@ -17,6 +17,7 @@ public class KeycloakProperties {
 
     @Getter @Setter
     public static class Admin {
+        private String realm;
         private String clientId;
         private String username;
         private String password;
