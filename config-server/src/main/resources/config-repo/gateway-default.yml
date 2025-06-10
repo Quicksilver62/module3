@@ -1,0 +1,57 @@
+spring:
+  rabbitmq:
+    host: 127.0.0.1
+    port: 5672
+    username: guest
+    password: guest
+
+  cloud:
+    gateway:
+      default-filters:
+        - TokenRelay
+      routes:
+        - id: account-service
+          uri: lb://account-service
+          predicates:
+            - Path=/account-service/**
+          filters:
+            - RewritePath=/account-service/(?<segment>.*), /${segment}
+        - id: frontend
+          uri: lb://frontend
+          predicates:
+            - Path=/frontend/**
+          filters:
+            - RewritePath=/frontend/(?<segment>.*), /${segment}
+
+  security:
+    oauth2:
+      client:
+        registration:
+          keycloak:
+            client-id: gateway
+            client-secret: GPp6JRiIJm1PNmAYfJdOXUnOIigEQqqp
+            scope: openid, profile, email
+            authorization-grant-type: authorization_code
+            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+        provider:
+          keycloak:
+            issuer-uri: http://localhost:8082/realms/bank
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: refresh, busrefresh, busshutdown
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+    register-with-eureka: true
+    fetch-registry: true
+
+logging:
+  level:
+    org.springframework.security: DEBUG
+    org.springframework.web: DEBUG
+    org.springframework.security.oauth2: DEBUG

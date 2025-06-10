@@ -15,7 +15,7 @@ public class MainController {
 
     private final AccountService accountService;
 
-    @GetMapping
+    @GetMapping("/main")
     public String mainPage(Model model, OAuth2AuthenticationToken authentication) {
         OAuth2User principal = authentication.getPrincipal();
 
@@ -28,7 +28,7 @@ public class MainController {
         model.addAttribute("birthdate", birthdate);
         model.addAttribute("currency", Currency.values());
 
-        var accounts = accountService.getAccounts(username);
+//        accountService.getAccounts();
 
         return "main";
     }

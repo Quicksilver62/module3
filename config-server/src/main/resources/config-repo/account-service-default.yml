@@ -9,7 +9,12 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: http://localhost:8082/realms/demo
+          issuer-uri: http://localhost:8082/realms/bank
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
 
 #  datasource:
 #    url: jdbc:postgresql://localhost:5432/bank
