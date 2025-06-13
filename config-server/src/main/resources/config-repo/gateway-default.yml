@@ -30,9 +30,9 @@ spring:
           keycloak:
             client-id: gateway
             client-secret: GPp6JRiIJm1PNmAYfJdOXUnOIigEQqqp
-            scope: openid, profile, email
+            scope: discovery
             authorization-grant-type: authorization_code
-            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+#            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
         provider:
           keycloak:
             issuer-uri: http://localhost:8082/realms/bank
