@@ -28,7 +28,9 @@ public class MainController {
         model.addAttribute("birthdate", birthdate);
         model.addAttribute("currency", Currency.values());
 
-//        accountService.getAccounts();
+        var account = accountService.getAccounts();
+
+        model.addAttribute("accounts", account);
 
         return "main";
     }

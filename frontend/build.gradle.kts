@@ -34,6 +34,7 @@ dependencies {
 	implementation("org.springframework.cloud:spring-cloud-starter-bootstrap")
 	implementation("org.keycloak:keycloak-admin-client:26.0.5")
 	implementation("org.springframework.cloud:spring-cloud-starter-openfeign:4.3.0")
+	implementation("com.fasterxml.jackson.core:jackson-databind:2.19.0")
 
 	compileOnly("org.projectlombok:lombok")
 

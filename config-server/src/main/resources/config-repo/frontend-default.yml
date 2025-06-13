@@ -23,6 +23,12 @@ spring:
               - view_all
               - microprofile-jwt
 
+  jackson:
+    default-property-inclusion: non_null
+    deserialization:
+      fail-on-unknown-properties: false
+    serialization:
+      write-dates-as-timestamps: false
 
 keycloak:
   auth-server-url: http://localhost:8082
@@ -38,3 +44,7 @@ management:
     web:
       exposure:
         include: refresh, busrefresh, busshutdown
+
+logging:
+  level:
+    feign.client: DEBUG

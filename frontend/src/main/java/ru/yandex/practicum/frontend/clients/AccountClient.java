@@ -6,7 +6,7 @@ import ru.yandex.practicum.frontend.model.Account;
 
 import java.util.List;
 
-@FeignClient(name = "gateway", path = "/api/accounts")
+@FeignClient(name = "account-service", path = "/api/accounts")
 public interface AccountClient {
 
     @GetMapping

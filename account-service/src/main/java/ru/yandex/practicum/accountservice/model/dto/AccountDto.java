@@ -1,4 +1,4 @@
-package ru.yandex.practicum.accountservice.model;
+package ru.yandex.practicum.accountservice.model.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -10,7 +10,7 @@ import ru.yandex.practicum.accountservice.enums.Currency;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Account {
+public class AccountDto {
 
     private Currency currency;
     private boolean exists;

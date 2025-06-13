@@ -7,7 +7,7 @@ spring:
 
   security:
     oauth2:
-      resourceserver:
+      resource-server:
         jwt:
           issuer-uri: http://localhost:8082/realms/bank
 
@@ -16,22 +16,22 @@ eureka:
     service-url:
       defaultZone: http://localhost:8761/eureka
 
-#  datasource:
-#    url: jdbc:postgresql://localhost:5432/bank
-#    username: admin
-#    password: 12345
-#    driver-class-name: org.postgresql.Driver
-#    hikari:
-#      pool-name: HikariPool
-#      minimum-idle: 5
-#      maximum-pool-size: 20
-#      idle-timeout: 30000
-#      max-lifetime: 1800000
-#      connection-timeout: 30000
-#      leak-detection-threshold: 2000
-#      sql:
-#        init:
-#          mode: always
+  datasource:
+    url: jdbc:postgresql://localhost:5432/bank
+    username: admin
+    password: 12345
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      pool-name: HikariPool
+      minimum-idle: 5
+      maximum-pool-size: 20
+      idle-timeout: 30000
+      max-lifetime: 1800000
+      connection-timeout: 30000
+      leak-detection-threshold: 2000
+      sql:
+        init:
+          mode: always
 
 management:
   endpoints:

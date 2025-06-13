@@ -14,7 +14,7 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    @Value("${spring.security.oauth2.resourceserver.jwt.issuer-uri}")
+    @Value("${spring.security.oauth2.resource-server.jwt.issuer-uri}")
     private String issuerUri;
 
     @Bean
@@ -22,8 +22,8 @@ public class SecurityConfig {
         return http
                 .authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests
-                                .requestMatchers("/api/accounts/*").hasAuthority("SCOPE_resource.read")
-                                .anyRequest().authenticated()
+                                .anyRequest().permitAll()
+//                                .anyRequest().authenticated()
                 )
                 .oauth2ResourceServer(oauth2 ->
                         oauth2.jwt(jwt -> jwt.decoder(jwtDecoder()))
