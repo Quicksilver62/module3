@@ -3,12 +3,14 @@
   <component name="ExternalStorageConfigurationManager" enabled="true" />
   <component name="FrameworkDetectionExcludesConfiguration">
     <file type="web" url="file://$PROJECT_DIR$/account-service" />
+    <file type="web" url="file://$PROJECT_DIR$/blocker-service" />
     <file type="web" url="file://$PROJECT_DIR$/cash-service" />
     <file type="web" url="file://$PROJECT_DIR$/config-server" />
     <file type="web" url="file://$PROJECT_DIR$/eureka-server" />
     <file type="web" url="file://$PROJECT_DIR$/eureka-service" />
     <file type="web" url="file://$PROJECT_DIR$/frontend" />
     <file type="web" url="file://$PROJECT_DIR$/gateway" />
+    <file type="web" url="file://$PROJECT_DIR$/notification-service" />
     <file type="web" url="file://$PROJECT_DIR$/property-printer" />
     <file type="web" url="file://$PROJECT_DIR$/serviceA" />
     <file type="web" url="file://$PROJECT_DIR$/serviceB" />
