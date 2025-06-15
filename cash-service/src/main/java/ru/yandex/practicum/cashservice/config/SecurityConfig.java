@@ -1,4 +1,4 @@
-package ru.yandex.practicum.blockerservice.config;
+package ru.yandex.practicum.cashservice.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

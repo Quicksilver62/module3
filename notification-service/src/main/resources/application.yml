@@ -1,0 +1,11 @@
+server:
+  port: 9005
+spring:
+  application:
+    name: notification-service
+  cloud:
+    config:
+      discovery:
+        enabled: true
+        service-id: config-service
+      import: "optional:configserver:"

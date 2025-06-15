@@ -1,0 +1,11 @@
+server:
+  port: 9004
+spring:
+  application:
+    name: cash-service
+  cloud:
+    config:
+      discovery:
+        enabled: true
+        service-id: config-service
+      import: "optional:configserver:"
