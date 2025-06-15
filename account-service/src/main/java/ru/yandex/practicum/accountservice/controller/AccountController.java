@@ -11,6 +11,7 @@ import ru.yandex.practicum.accountservice.enums.Currency;
 import ru.yandex.practicum.accountservice.model.dto.AccountDto;
 import ru.yandex.practicum.accountservice.service.AccountService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -29,8 +30,9 @@ public class AccountController {
 
     @GetMapping
     public List<AccountDto> accounts(OAuth2AuthenticationToken authentication) {
-        OAuth2User principal = authentication.getPrincipal();
-        String username = principal.getAttribute("preferred_username");
-        return accountService.getAccounts(username);
+        return List.of(new AccountDto(Currency.RUB, true, 0.0));
+//        OAuth2User principal = authentication.getPrincipal();
+//        String username = principal.getAttribute("preferred_username");
+//        return accountService.getAccounts(username);
     }
 }

@@ -26,7 +26,7 @@ repositories {
 
 dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-web")
-	implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
+	implementation("org.springframework.boot:spring-boot-starter-security")
 	implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client")
 	implementation("org.springframework.cloud:spring-cloud-starter-config")
 	implementation("org.springframework.cloud:spring-cloud-starter-bus-amqp")
@@ -35,6 +35,7 @@ dependencies {
 	implementation("org.keycloak:keycloak-admin-client:26.0.5")
 	implementation("org.springframework.cloud:spring-cloud-starter-openfeign:4.3.0")
 	implementation("com.fasterxml.jackson.core:jackson-databind:2.19.0")
+	implementation("org.springframework.security:spring-security-oauth2-client")
 
 	compileOnly("org.projectlombok:lombok")
 

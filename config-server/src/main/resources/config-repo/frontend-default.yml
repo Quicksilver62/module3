@@ -23,6 +23,11 @@ spring:
               - view_all
               - microprofile-jwt
 
+  cloud:
+    openfeign:
+      oauth2:
+        enabled: true
+
   jackson:
     default-property-inclusion: non_null
     deserialization:

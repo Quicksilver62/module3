@@ -1,0 +1,11 @@
+server:
+  port: 9003
+spring:
+  application:
+    name: blocker-service
+  cloud:
+    config:
+      discovery:
+        enabled: true
+        service-id: config-service
+      import: "optional:configserver:"
