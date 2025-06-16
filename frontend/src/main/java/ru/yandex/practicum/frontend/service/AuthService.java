@@ -102,7 +102,7 @@ public class AuthService {
         user.setAttributes(attributes);
 
         var result = keycloak.realm(keycloakProperties.getRealm()).users().create(user);
-        notificationClient.notifyUserAuth();
+        notificationClient.sendNotification("Регистрация прошла успешно");
 
         return result;
     }

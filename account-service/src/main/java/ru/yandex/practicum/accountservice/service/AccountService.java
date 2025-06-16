@@ -42,4 +42,22 @@ public class AccountService {
         }
         throw new RuntimeException("Account already exists");
     }
+
+    public AccountDto getAccount(String username, Currency currency) {
+        var optUserAccount = accountRepository.findByUsernameAndCurrency(username, currency);
+        if (optUserAccount.isPresent()) {
+            return accountMapper.toAccountDto(optUserAccount.get());
+        }
+        throw new RuntimeException("Account with currency " + currency + " not found");
+    }
+
+    public AccountDto updateAccount(String username, AccountDto accountDto) {
+        var optUserAccount = accountRepository.findByUsernameAndCurrency(username, accountDto.getCurrency());
+        if (optUserAccount.isPresent()) {
+            var userAccount = optUserAccount.get();
+            userAccount.setValue(accountDto.getValue());
+            accountRepository.save(userAccount);
+        }
+        throw new RuntimeException("Account with currency " + accountDto.getCurrency() + " not found");
+    }
 }

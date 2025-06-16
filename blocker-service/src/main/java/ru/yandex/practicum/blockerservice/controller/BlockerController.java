@@ -11,7 +11,7 @@ import java.util.Random;
 public class BlockerController {
 
     @GetMapping("/isBlocked")
-    public Boolean createAccount() {
+    public Boolean isBlocked() {
         return new Random().nextBoolean();
     }
 }

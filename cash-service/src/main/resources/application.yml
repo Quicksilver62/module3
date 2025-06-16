@@ -1,5 +1,5 @@
 server:
-  port: 9004
+  port: 8083
 spring:
   application:
     name: cash-service
@@ -9,3 +9,19 @@ spring:
         enabled: true
         service-id: config-service
       import: "optional:configserver:"
+
+services:
+  account-service:
+    url: http://localhost:8081
+  blocker-service:
+    url: http://localhost:8082
+  notification-service:
+    url: http://localhost:8084
+
+feign:
+  client:
+    config:
+      default:
+        connectTimeout: 5000
+        readTimeout: 5000
+        loggerLevel: full
