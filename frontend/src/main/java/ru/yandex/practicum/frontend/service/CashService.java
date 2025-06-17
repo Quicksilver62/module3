@@ -33,7 +33,7 @@ public class CashService {
             else {
                 return response.getBody() != null
                         ? response.getBody().toString()
-                        : "Ошибка без описания (статус: " + response.getStatusCode() + ")";
+                        : "Ошибка (статус: " + response.getStatusCode() + ")";
             }
         } catch (Exception e) {
             return "Ошибка при вызове cash-service: " + e.getMessage();

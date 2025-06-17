@@ -18,10 +18,10 @@ public class CashService {
 
     public String putCash(CashOperation cashOperation) {
         try {
-            Account account = accountClient.getAccount(cashOperation.currency().name());
             if (blockerClient.checkBlock()) {
                 return "Операция заблокирована";
             }
+            Account account = accountClient.getAccount(cashOperation.currency().name());
             account.setValue(account.getValue() + cashOperation.value());
             accountClient.updateAccount(account);
             notificationClient.sendNotification("Зачислено %s %s".formatted(cashOperation.value(), cashOperation.currency()));
@@ -40,7 +40,7 @@ public class CashService {
             if (account.getValue() < cashOperation.value()) {
                 return "Недостаточно средств";
             }
-            account.setValue(account.getValue() + cashOperation.value());
+            account.setValue(account.getValue() - cashOperation.value());
             accountClient.updateAccount(account);
             notificationClient.sendNotification("Снято %s %s".formatted(cashOperation.value(), cashOperation.currency()));
         } catch (Exception e) {

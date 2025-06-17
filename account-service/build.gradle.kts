@@ -36,6 +36,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
     implementation("org.springframework.cloud:spring-cloud-starter-bootstrap")
     implementation("org.mapstruct:mapstruct:1.6.3")
+    implementation("org.springframework.cloud:spring-cloud-starter-openfeign:4.3.0")
 
     compileOnly("org.projectlombok:lombok")
 

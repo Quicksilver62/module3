@@ -45,6 +45,14 @@
         </option>
       </GradleProjectSettings>
       <GradleProjectSettings>
+        <option name="externalProjectPath" value="$PROJECT_DIR$/exchange-service" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$/exchange-service" />
+          </set>
+        </option>
+      </GradleProjectSettings>
+      <GradleProjectSettings>
         <option name="externalProjectPath" value="$PROJECT_DIR$/frontend" />
         <option name="modules">
           <set>
@@ -65,6 +73,14 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$/notification-service" />
+          </set>
+        </option>
+      </GradleProjectSettings>
+      <GradleProjectSettings>
+        <option name="externalProjectPath" value="$PROJECT_DIR$/transfer-service" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$/transfer-service" />
           </set>
         </option>
       </GradleProjectSettings>

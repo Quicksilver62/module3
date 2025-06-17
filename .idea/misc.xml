@@ -8,6 +8,7 @@
     <file type="web" url="file://$PROJECT_DIR$/config-server" />
     <file type="web" url="file://$PROJECT_DIR$/eureka-server" />
     <file type="web" url="file://$PROJECT_DIR$/eureka-service" />
+    <file type="web" url="file://$PROJECT_DIR$/exchange-service" />
     <file type="web" url="file://$PROJECT_DIR$/frontend" />
     <file type="web" url="file://$PROJECT_DIR$/gateway" />
     <file type="web" url="file://$PROJECT_DIR$/notification-service" />
@@ -15,6 +16,7 @@
     <file type="web" url="file://$PROJECT_DIR$/serviceA" />
     <file type="web" url="file://$PROJECT_DIR$/serviceB" />
     <file type="web" url="file://$PROJECT_DIR$/template-application" />
+    <file type="web" url="file://$PROJECT_DIR$/transfer-service" />
   </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_21" default="true" project-jdk-name="21" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/out" />

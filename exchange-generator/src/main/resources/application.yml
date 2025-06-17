@@ -1,0 +1,11 @@
+server:
+  port: 9008
+spring:
+  application:
+    name: exchange-generator
+  cloud:
+    config:
+      discovery:
+        enabled: true
+        service-id: config-service
+      import: "optional:configserver:"

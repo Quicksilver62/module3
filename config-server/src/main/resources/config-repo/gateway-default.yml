@@ -36,6 +36,27 @@ spring:
           filters:
             - TokenRelay
             - RewritePath=/notification-service/(?<segment>.*), /${segment}
+        - id: transfer-service
+          uri: lb://transfer-service
+          predicates:
+            - Path=/transfer-service/**
+          filters:
+            - TokenRelay
+            - RewritePath=/transfer-service/(?<segment>.*), /${segment}
+        - id: exchange-service
+          uri: lb://exchange-service
+          predicates:
+            - Path=/exchange-service/**
+          filters:
+            - TokenRelay
+            - RewritePath=/exchange-service/(?<segment>.*), /${segment}
+        - id: exchange-generator
+          uri: lb://exchange-generator
+          predicates:
+            - Path=/exchange-generator/**
+          filters:
+            - TokenRelay
+            - RewritePath=/exchange-generator/(?<segment>.*), /${segment}
   security:
     oauth2:
       resourceserver:

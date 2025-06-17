@@ -1,0 +1,11 @@
+server:
+  port: 9006
+spring:
+  application:
+    name: transfer-service
+  cloud:
+    config:
+      discovery:
+        enabled: true
+        service-id: config-service
+      import: "optional:configserver:"

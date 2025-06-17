@@ -1,7 +1,6 @@
 package ru.yandex.practicum.frontend.controller;
 
-import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
-import org.springframework.security.oauth2.core.user.OAuth2User;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -9,29 +8,37 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import ru.yandex.practicum.frontend.enums.Currency;
+import ru.yandex.practicum.frontend.service.CashService;
+import ru.yandex.practicum.frontend.service.TransferService;
 
 @Controller
 @RequestMapping("/user/{login}")
+@RequiredArgsConstructor
 public class UserController {
 
-    @PostMapping("/account")
-    public String createAccount(
-            @PathVariable String login,
-            @RequestParam String currency,
-            Model model,
-            OAuth2AuthenticationToken authentication
-    ) {
-        OAuth2User principal = authentication.getPrincipal();
+    private final CashService cashService;
+    private final TransferService transferService;
 
-        String username = principal.getAttribute("preferred_username");
-        String name = principal.getAttribute("name");
-        String birthdate = principal.getAttribute("birthdate");
+    @PostMapping("/cash")
+    public String handleCashOperation(@PathVariable String login,
+                                      @RequestParam Currency currency,
+                                      @RequestParam double value,
+                                      @RequestParam String action,
+                                      Model model) {
+        String error = cashService.handleCashOperation(currency, value, action);
+        model.addAttribute("cashErrors", error);
+        return "redirect:/main";
+    }
 
-        model.addAttribute("login", username);
-        model.addAttribute("name", name);
-        model.addAttribute("birthdate", birthdate);
-        model.addAttribute("currency", Currency.values());
-
-        return "main";
+    @PostMapping("/cash")
+    public String handleTransferOperation(@PathVariable String login,
+                                          @RequestParam String from_currency,
+                                          @RequestParam String to_currency,
+                                          @RequestParam double value,
+                                          @RequestParam String to_login,
+                                          Model model) {
+        String error = transferService.handleTransferOperation(from_currency, to_currency, value, to_login);
+        model.addAttribute("transferErrors", error);
+        return "redirect:/main";
     }
 }

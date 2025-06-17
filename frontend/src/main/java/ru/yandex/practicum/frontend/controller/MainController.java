@@ -8,14 +8,12 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.frontend.enums.Currency;
 import ru.yandex.practicum.frontend.service.AccountService;
-import ru.yandex.practicum.frontend.service.CashService;
 
 @Controller
 @RequiredArgsConstructor
 public class MainController {
 
     private final AccountService accountService;
-    private final CashService cashService;
 
     @GetMapping("/main")
     public String mainPage(Model model, OAuth2AuthenticationToken authentication) {
@@ -35,15 +33,5 @@ public class MainController {
         model.addAttribute("accounts", account);
 
         return "main";
-    }
-
-    @PostMapping("/cash")
-    public String handleCashOperation(@RequestParam Currency currency,
-                                      @RequestParam double value,
-                                      @RequestParam String action,
-                                      Model model) {
-        String error = cashService.handleCashOperation(currency, value, action);
-        model.addAttribute("cashErrors", error);
-        return "redirect:/main";
     }
 }

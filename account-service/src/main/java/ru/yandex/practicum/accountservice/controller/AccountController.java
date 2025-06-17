@@ -25,9 +25,14 @@ public class AccountController {
     }
 
     @GetMapping("/accounts")
-    public List<AccountDto> accounts(OAuth2AuthenticationToken authentication) {
+    public List<AccountDto> getAccounts(OAuth2AuthenticationToken authentication) {
         OAuth2User principal = authentication.getPrincipal();
         String username = principal.getAttribute("preferred_username");
+        return accountService.getAccounts(username);
+    }
+
+    @GetMapping("/accounts-by-username")
+    public List<AccountDto> getAccountsByUsername(@RequestParam String username) {
         return accountService.getAccounts(username);
     }
 
