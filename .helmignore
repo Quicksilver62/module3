@@ -1,0 +1,24 @@
+# Бинарные файлы
+*.jar
+*.war
+target/
+build/
+
+# Системные и IDE
+.idea/
+.vscode/
+*.iml
+.DS_Store
+
+# Git
+.git/
+.gitignore
+
+# CI/CD
+.github/
+.gitlab-ci.yml
+
+# Документация и тесты
+README.md
+docs/
+tests/

@@ -1,0 +1,57 @@
+apiVersion: v2
+name: module3-app
+description: Umbrella chart for microservices
+type: application
+version: 0.1.0
+appVersion: "0.0.1-SNAPSHOT"
+
+dependencies:
+  - name: account-service
+    version: "0.1.0"
+    repository: "file://./charts/account-service"
+
+  - name: blocker-service
+    version: "0.1.0"
+    repository: "file://./charts/blocker-service"
+
+  - name: cash-service
+    version: "0.1.0"
+    repository: "file://./charts/cash-service"
+
+  - name: config-server
+    version: "0.1.0"
+    repository: "file://./charts/config-service"
+
+  - name: eureka-server
+    version: "0.1.0"
+    repository: "file://./charts/eureka-service"
+
+  - name: exchange-generator
+    version: "0.1.0"
+    repository: "file://./charts/exchange-generator"
+
+  - name: exchange-service
+    version: "0.1.0"
+    repository: "file://./charts/exchange-service"
+
+  - name: frontend
+    version: "0.1.0"
+    repository: "file://./charts/frontend"
+
+  - name: gateway
+    version: "0.1.0"
+    repository: "file://./charts/gateway"
+
+  - name: notification-service
+    version: "0.1.0"
+    repository: "file://./charts/notification-service"
+
+  - name: transfer-service
+    version: "0.1.0"
+    repository: "file://./charts/transfer-service"
+
+  - name: postgresql
+    version: "14.2.3"
+    repository: "https://charts.bitnami.com/bitnami"
+    alias: account-db
+    condition: account-db.enabled
