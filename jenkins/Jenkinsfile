@@ -1,0 +1,398 @@
+pipeline {
+    agent any
+
+    environment {
+        DOCKER_REGISTRY = credentials('DOCKER_REGISTRY')
+        DB_PASSWORD     = credentials('DB_PASSWORD')
+        GITHUB_USERNAME = credentials('GITHUB_USERNAME')
+        DB_NAME         = 'bank'
+        DB_USER         = 'postgres'
+        IMAGE_TAG       = "${env.BUILD_NUMBER}"
+    }
+
+    stages {
+        stage('Build & Unit Tests') {
+            parallel {
+                stage('Account Service') {
+                    steps {
+                        dir('account-service') {
+                            sh 'gradle build'
+                        }
+                    }
+                }
+                stage('Blocker Service') {
+                    steps {
+                        dir('blocker-service') {
+                            sh 'gradle build'
+                        }
+                    }
+                }
+                stage('Cash Service') {
+                    steps {
+                        dir('cash-service') {
+                            sh 'gradle build'
+                        }
+                    }
+                }
+                stage('Config Server') {
+                    steps {
+                        dir('config-server') {
+                            sh 'gradle build'
+                        }
+                    }
+                }
+                stage('Eureka Server') {
+                    steps {
+                        dir('eureka-server') {
+                            sh 'gradle build'
+                        }
+                    }
+                }
+                stage('Exchange Generator') {
+                    steps {
+                        dir('exchange-generator') {
+                            sh 'gradle build'
+                        }
+                    }
+                }
+                stage('Exchange Service') {
+                    steps {
+                        dir('exchange-service') {
+                            sh 'gradle build'
+                        }
+                    }
+                }
+                stage('Frontend') {
+                    steps {
+                        dir('frontend') {
+                            sh 'gradle build'
+                        }
+                    }
+                }
+                stage('Gateway') {
+                    steps {
+                        dir('gateway') {
+                            sh 'gradle build'
+                        }
+                    }
+                }
+                stage('Notification Service') {
+                    steps {
+                        dir('notification-service') {
+                            sh 'gradle build'
+                        }
+                    }
+                }
+                stage('Transfer Service') {
+                    steps {
+                        dir('transfer-service') {
+                            sh 'gradle build'
+                        }
+                    }
+                }
+            }
+        }
+
+        stage('Build Docker Images') {
+            steps {
+                sh """
+                docker build -t ${DOCKER_REGISTRY}/account-service:${IMAGE_TAG} account-service
+                docker build -t ${DOCKER_REGISTRY}/blocker-service:${IMAGE_TAG} blocker-service
+                docker build -t ${DOCKER_REGISTRY}/cash-service:${IMAGE_TAG} cash-service
+                docker build -t ${DOCKER_REGISTRY}/config-server:${IMAGE_TAG} config-server
+                docker build -t ${DOCKER_REGISTRY}/eureka-server:${IMAGE_TAG} eureka-server
+                docker build -t ${DOCKER_REGISTRY}/exchange-generator:${IMAGE_TAG} exchange-generator
+                docker build -t ${DOCKER_REGISTRY}/exchange-service:${IMAGE_TAG} exchange-service
+                docker build -t ${DOCKER_REGISTRY}/frontend:${IMAGE_TAG} frontend
+                docker build -t ${DOCKER_REGISTRY}/gateway:${IMAGE_TAG} gateway
+                docker build -t ${DOCKER_REGISTRY}/notification-service:${IMAGE_TAG} notification-service
+                docker build -t ${DOCKER_REGISTRY}/transfer-service:${IMAGE_TAG} transfer-service
+                """
+            }
+        }
+
+        stage('Push Docker Images') {
+            steps {
+                withCredentials([string(credentialsId: 'GHCR_TOKEN', variable: 'GHCR_TOKEN')]) {
+                    sh """
+                    echo \$GHCR_TOKEN | docker login ghcr.io -u ${GITHUB_USERNAME} --password-stdin
+                    docker push ${DOCKER_REGISTRY}/account-service:${IMAGE_TAG}
+                    docker push ${DOCKER_REGISTRY}/blocker-service:${IMAGE_TAG}
+                    docker push ${DOCKER_REGISTRY}/cash-service:${IMAGE_TAG}
+                    docker push ${DOCKER_REGISTRY}/config-server:${IMAGE_TAG}
+                    docker push ${DOCKER_REGISTRY}/eureka-server:${IMAGE_TAG}
+                    docker push ${DOCKER_REGISTRY}/exchange-generator:${IMAGE_TAG}
+                    docker push ${DOCKER_REGISTRY}/exchange-service:${IMAGE_TAG}
+                    docker push ${DOCKER_REGISTRY}/frontend:${IMAGE_TAG}
+                    docker push ${DOCKER_REGISTRY}/gateway:${IMAGE_TAG}
+                    docker push ${DOCKER_REGISTRY}/notification-service:${IMAGE_TAG}
+                    docker push ${DOCKER_REGISTRY}/transfer-service:${IMAGE_TAG}
+                    """
+                }
+            }
+        }
+
+        stage('Install PostgreSQL to TEST') {
+            steps {
+                sh """
+                helm repo add bitnami https://charts.bitnami.com/bitnami
+                helm repo update
+
+                helm upgrade --install postgres bitnami/postgresql \\
+                  --namespace test --create-namespace \\
+                  --set auth.database=${DB_NAME} \\
+                  --set auth.username=${DB_USER} \\
+                  --set auth.password=${DB_PASSWORD}
+                """
+            }
+        }
+
+        stage('Create DB Secrets for TEST') {
+            steps {
+                sh """
+                kubectl create secret generic account-service-account-db \\
+                  --from-literal=password=${DB_PASSWORD} \\
+                  -n test --dry-run=client -o yaml | kubectl apply -f -
+                """
+            }
+        }
+
+        stage('Helm Deploy to TEST') {
+            steps {
+                sh """
+                helm upgrade --install eureka-server my-microservices-app/charts/eureka-server \\
+                  --namespace test --create-namespace \\
+                  --set image.repository=${DOCKER_REGISTRY}/eureka-server \\
+                  --set image.tag=${IMAGE_TAG} \\
+                  --set ingress.enabled=true \\
+                  --set ingress.hosts[0].host=eureka.test.local \\
+                  --set ingress.hosts[0].paths[0].path="/" \\
+                  --set ingress.hosts[0].paths[0].pathType="ImplementationSpecific"
+
+                helm upgrade --install config-server my-microservices-app/charts/config-server \\
+                  --namespace test --create-namespace \\
+                  --set image.repository=${DOCKER_REGISTRY}/config-server \\
+                  --set image.tag=${IMAGE_TAG} \\
+                  --set ingress.enabled=true \\
+                  --set ingress.hosts[0].host=config.test.local \\
+                  --set ingress.hosts[0].paths[0].path="/" \\
+                  --set ingress.hosts[0].paths[0].pathType="ImplementationSpecific"
+
+                helm upgrade --install gateway my-microservices-app/charts/gateway \\
+                  --namespace test --create-namespace \\
+                  --set image.repository=${DOCKER_REGISTRY}/gateway \\
+                  --set image.tag=${IMAGE_TAG} \\
+                  --set ingress.enabled=true \\
+                  --set ingress.hosts[0].host=gateway.test.local \\
+                  --set ingress.hosts[0].paths[0].path="/" \\
+                  --set ingress.hosts[0].paths[0].pathType="ImplementationSpecific"
+
+                helm upgrade --install account-service my-microservices-app/charts/account-service \\
+                  --namespace test --create-namespace \\
+                  --set image.repository=${DOCKER_REGISTRY}/account-service \\
+                  --set image.tag=${IMAGE_TAG} \\
+                  --set ingress.enabled=true \\
+                  --set ingress.hosts[0].host=account.test.local \\
+                  --set ingress.hosts[0].paths[0].path="/" \\
+                  --set ingress.hosts[0].paths[0].pathType="ImplementationSpecific"
+
+                helm upgrade --install blocker-service my-microservices-app/charts/blocker-service \\
+                  --namespace test --create-namespace \\
+                  --set image.repository=${DOCKER_REGISTRY}/blocker-service \\
+                  --set image.tag=${IMAGE_TAG} \\
+                  --set ingress.enabled=true \\
+                  --set ingress.hosts[0].host=blocker.test.local \\
+                  --set ingress.hosts[0].paths[0].path="/" \\
+                  --set ingress.hosts[0].paths[0].pathType="ImplementationSpecific"
+
+                helm upgrade --install cash-service my-microservices-app/charts/cash-service \\
+                  --namespace test --create-namespace \\
+                  --set image.repository=${DOCKER_REGISTRY}/cash-service \\
+                  --set image.tag=${IMAGE_TAG} \\
+                  --set ingress.enabled=true \\
+                  --set ingress.hosts[0].host=cash.test.local \\
+                  --set ingress.hosts[0].paths[0].path="/" \\
+                  --set ingress.hosts[0].paths[0].pathType="ImplementationSpecific"
+
+                helm upgrade --install exchange-generator my-microservices-app/charts/exchange-generator \\
+                  --namespace test --create-namespace \\
+                  --set image.repository=${DOCKER_REGISTRY}/exchange-generator \\
+                  --set image.tag=${IMAGE_TAG} \\
+                  --set ingress.enabled=true \\
+                  --set ingress.hosts[0].host=exchange-generator.test.local \\
+                  --set ingress.hosts[0].paths[0].path="/" \\
+                  --set ingress.hosts[0].paths[0].pathType="ImplementationSpecific"
+
+                helm upgrade --install exchange-service my-microservices-app/charts/exchange-service \\
+                  --namespace test --create-namespace \\
+                  --set image.repository=${DOCKER_REGISTRY}/exchange-service \\
+                  --set image.tag=${IMAGE_TAG} \\
+                  --set ingress.enabled=true \\
+                  --set ingress.hosts[0].host=exchange.test.local \\
+                  --set ingress.hosts[0].paths[0].path="/" \\
+                  --set ingress.hosts[0].paths[0].pathType="ImplementationSpecific"
+
+                helm upgrade --install notification-service my-microservices-app/charts/notification-service \\
+                  --namespace test --create-namespace \\
+                  --set image.repository=${DOCKER_REGISTRY}/notification-service \\
+                  --set image.tag=${IMAGE_TAG} \\
+                  --set ingress.enabled=true \\
+                  --set ingress.hosts[0].host=notification.test.local \\
+                  --set ingress.hosts[0].paths[0].path="/" \\
+                  --set ingress.hosts[0].paths[0].pathType="ImplementationSpecific"
+
+                helm upgrade --install transfer-service my-microservices-app/charts/tag-service \\
+                  --namespace test --create-namespace \\
+                  --set image.repository=${DOCKER_REGISTRY}/transfer-service \\
+                  --set image.tag=${IMAGE_TAG} \\
+                  --set ingress.enabled=true \\
+                  --set ingress.hosts[0].host=transfer.test.local \\
+                  --set ingress.hosts[0].paths[0].path="/" \\
+                  --set ingress.hosts[0].paths[0].pathType="ImplementationSpecific"
+
+                helm upgrade --install frontend my-microservices-app/charts/frontend \\
+                  --namespace test --create-namespace \\
+                  --set image.repository=${DOCKER_REGISTRY}/frontend \\
+                  --set image.tag=${IMAGE_TAG} \\
+                  --set ingress.enabled=true \\
+                  --set ingress.hosts[0].host=frontend.test.local \\
+                  --set ingress.hosts[0].paths[0].path="/" \\
+                  --set ingress.hosts[0].paths[0].pathType="ImplementationSpecific"
+                """
+            }
+        }
+
+        stage('Manual Approval for PROD') {
+            steps {
+                input message: 'Deploy to PROD environment?', ok: 'Yes, deploy'
+            }
+        }
+
+        stage('Install PostgreSQL to PROD') {
+            steps {
+                sh """
+                helm upgrade --install postgres bitnami/postgresql \\
+                  --namespace prod --create-namespace \\
+                  --set auth.database=${DB_NAME} \\
+                  --set auth.username=${DB_USER} \\
+                  --set auth.password=${DB_PASSWORD}
+                """
+            }
+        }
+
+        stage('Create DB Secrets for PROD') {
+            steps {
+                sh """
+                kubectl create secret generic account-service-account-db \\
+                  --from-literal=password=${DB_PASSWORD} \\
+                  -n prod --dry-run=client -o yaml | kubectl apply -f -
+                """
+            }
+        }
+
+        stage('Helm Deploy to PROD') {
+            steps {
+                sh """
+                helm upgrade --install eureka-server my-microservices-app/charts/eureka-server \\
+                  --namespace prod --create-namespace \\
+                  --set image.repository=${DOCKER_REGISTRY}/eureka-server \\
+                  --set image.tag=${IMAGE_TAG} \\
+                  --set ingress.enabled=true \\
+                  --set ingress.hosts[0].host=eureka.prod.local \\
+                  --set ingress.hosts[0].paths[0].path="/" \\
+                  --set ingress.hosts[0].paths[0].pathType="ImplementationSpecific"
+
+                helm upgrade --install config-server my-microservices-app/charts/config-server \\
+                  --namespace prod --create-namespace \\
+                  --set image.repository=${DOCKER_REGISTRY}/config-server \\
+                  --set image.tag=${IMAGE_TAG} \\
+                  --set ingress.enabled=true \\
+                  --set ingress.hosts[0].host=config.prod.local \\
+                  --set ingress.hosts[0].paths[0].path="/" \\
+                  --set ingress.hosts[0].paths[0].pathType="ImplementationSpecific"
+
+                helm upgrade --install gateway my-microservices-app/charts/gateway \\
+                  --namespace prod --create-namespace \\
+                  --set image.repository=${DOCKER_REGISTRY}/gateway \\
+                  --set image.tag=${IMAGE_TAG} \\
+                  --set ingress.enabled=true \\
+                  --set ingress.hosts[0].host=gateway.prod.local \\
+                  --set ingress.hosts[0].paths[0].path="/" \\
+                  --set ingress.hosts[0].paths[0].pathType="ImplementationSpecific"
+
+                helm upgrade --install account-service my-microservices-app/charts/account-service \\
+                  --namespace prod --create-namespace \\
+                  --set image.repository=${DOCKER_REGISTRY}/account-service \\
+                  --set image.tag=${IMAGE_TAG} \\
+                  --set ingress.enabled=true \\
+                  --set ingress.hosts[0].host=account.prod.local \\
+                  --set ingress.hosts[0].paths[0].path="/" \\
+                  --set ingress.hosts[0].paths[0].pathType="ImplementationSpecific"
+
+                helm upgrade --install blocker-service my-microservices-app/charts/blocker-service \\
+                  --namespace prod --create-namespace \\
+                  --set image.repository=${DOCKER_REGISTRY}/blocker-service \\
+                  --set image.tag=${IMAGE_TAG} \\
+                  --set ingress.enabled=true \\
+                  --set ingress.hosts[0].host=blocker.prod.local \\
+                  --set ingress.hosts[0].paths[0].path="/" \\
+                  --set ingress.hosts[0].paths[0].pathType="ImplementationSpecific"
+
+                helm upgrade --install cash-service my-microservices-app/charts/cash-service \\
+                  --namespace prod --create-namespace \\
+                  --set image.repository=${DOCKER_REGISTRY}/cash-service \\
+                  --set image.tag=${IMAGE_TAG} \\
+                  --set ingress.enabled=true \\
+                  --set ingress.hosts[0].host=cash.prod.local \\
+                  --set ingress.hosts[0].paths[0].path="/" \\
+                  --set ingress.hosts[0].paths[0].pathType="ImplementationSpecific"
+
+                helm upgrade --install exchange-generator my-microservices-app/charts/exchange-generator \\
+                  --namespace prod --create-namespace \\
+                  --set image.repository=${DOCKER_REGISTRY}/exchange-generator \\
+                  --set image.tag=${IMAGE_TAG} \\
+                  --set ingress.enabled=true \\
+                  --set ingress.hosts[0].host=exchange-generator.prod.local \\
+                  --set ingress.hosts[0].paths[0].path="/" \\
+                  --set ingress.hosts[0].paths[0].pathType="ImplementationSpecific"
+
+                helm upgrade --install exchange-service my-microservices-app/charts/exchange-service \\
+                  --namespace prod --create-namespace \\
+                  --set image.repository=${DOCKER_REGISTRY}/exchange-service \\
+                  --set image.tag=${IMAGE_TAG} \\
+                  --set ingress.enabled=true \\
+                  --set ingress.hosts[0].host=exchange.prod.local \\
+                  --set ingress.hosts[0].paths[0].path="/" \\
+                  --set ingress.hosts[0].paths[0].pathType="ImplementationSpecific"
+
+                helm upgrade --install notification-service my-microservices-app/charts/notification-service \\
+                  --namespace prod --create-namespace \\
+                  --set image.repository=${DOCKER_REGISTRY}/notification-service \\
+                  --set image.tag=${IMAGE_TAG} \\
+                  --set ingress.enabled=true \\
+                  --set ingress.hosts[0].host=notification.prod.local \\
+                  --set ingress.hosts[0].paths[0].path="/" \\
+                  --set ingress.hosts[0].paths[0].pathType="ImplementationSpecific"
+
+                helm upgrade --install transfer-service my-microservices-app/charts/tag-service \\
+                  --namespace prod --create-namespace \\
+                  --set image.repository=${DOCKER_REGISTRY}/transfer-service \\
+                  --set image.tag=${IMAGE_TAG} \\
+                  --set ingress.enabled=true \\
+                  --set ingress.hosts[0].host=transfer.prod.local \\
+                  --set ingress.hosts[0].paths[0].path="/" \\
+                  --set ingress.hosts[0].paths[0].pathType="ImplementationSpecific"
+
+                helm upgrade --install frontend my-microservices-app/charts/frontend \\
+                  --namespace prod --create-namespace \\
+                  --set image.repository=${DOCKER_REGISTRY}/frontend \\
+                  --set image.tag=${IMAGE_TAG} \\
+                  --set ingress.enabled=true \\
+                  --set ingress.hosts[0].host=frontend.prod.local \\
+                  --set ingress.hosts[0].paths[0].path="/" \\
+                  --set ingress.hosts[0].paths[0].pathType="ImplementationSpecific"
+                """
+            }
+        }
+    }
+}
