@@ -7,6 +7,7 @@ import ru.yandex.practicum.accountservice.enums.Currency;
 import ru.yandex.practicum.accountservice.mapper.AccountMapper;
 import ru.yandex.practicum.accountservice.model.UserAccount;
 import ru.yandex.practicum.accountservice.model.dto.AccountDto;
+import ru.yandex.practicum.accountservice.producer.NotificationProducer;
 import ru.yandex.practicum.accountservice.repository.AccountRepository;
 
 import java.util.List;
@@ -18,14 +19,14 @@ public class AccountService {
 
     private final AccountRepository accountRepository;
     private final AccountMapper accountMapper;
-    private final NotificationClient notificationClient;
+    private final NotificationProducer notificationProducer;
 
     public List<AccountDto> getAccounts(String username) {
         var accounts = accountRepository.findAllByUsername(username)
                 .stream()
                 .map(accountMapper::toAccountDto)
                 .collect(Collectors.toList());
-        notificationClient.sendNotification("Found accounts for user %s".formatted(username));
+        notificationProducer.send("Found accounts for user %s".formatted(username));
         return accounts;
     }
 
@@ -42,7 +43,7 @@ public class AccountService {
                     .value(0.0)
                     .build();
             var dbAccount = accountRepository.save(userAccount);
-            notificationClient.sendNotification("Account for user %s in %s created".formatted(
+            notificationProducer.send("Account for user %s in %s created".formatted(
                     username, currency.name()));
             return accountMapper.toAccountDto(dbAccount);
         }
@@ -52,7 +53,7 @@ public class AccountService {
     public AccountDto getAccount(String username, Currency currency) {
         var optUserAccount = accountRepository.findByUsernameAndCurrency(username, currency);
         if (optUserAccount.isPresent()) {
-            notificationClient.sendNotification("Found account for user %s in %s".formatted(
+            notificationProducer.send("Found account for user %s in %s".formatted(
                     username, currency.name()));
             return accountMapper.toAccountDto(optUserAccount.get());
         }
@@ -65,7 +66,7 @@ public class AccountService {
             var userAccount = optUserAccount.get();
             userAccount.setValue(accountDto.getValue());
             accountRepository.save(userAccount);
-            notificationClient.sendNotification("Account for user %s updated".formatted(username));
+            notificationProducer.send("Account for user %s updated".formatted(username));
         }
         throw new RuntimeException("Account with currency " + accountDto.getCurrency() + " not found");
     }

@@ -3,7 +3,7 @@ package ru.yandex.practicum.exchangeservice.service;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.exchangeservice.clients.ExchangeClient;
+import ru.yandex.practicum.exchangeservice.consumer.KafkaConsumer;
 import ru.yandex.practicum.exchangeservice.model.Rate;
 import ru.yandex.practicum.exchangeservice.model.TransferOperation;
 
@@ -16,10 +16,10 @@ import static ru.yandex.practicum.exchangeservice.enums.Currency.RUB;
 @RequiredArgsConstructor
 public class ExchangeService {
 
-    private final ExchangeClient exchangeClient;
+    private final KafkaConsumer consumer;
 
     public Double calculateExchangePrice(TransferOperation transferOperation) {
-        var rates = exchangeClient.getRates();
+        var rates = consumer.getRates();
         double result = transferOperation.value();
         if (transferOperation.fromCurrency().equals(transferOperation.toCurrency())) {
             return transferOperation.value();

@@ -36,6 +36,7 @@ dependencies {
 	implementation("org.springframework.cloud:spring-cloud-starter-openfeign:4.3.0")
 	implementation("com.fasterxml.jackson.core:jackson-databind:2.19.0")
 	implementation("org.springframework.security:spring-security-oauth2-client")
+	implementation("org.springframework.kafka:spring-kafka")
 
 	compileOnly("org.projectlombok:lombok")
 

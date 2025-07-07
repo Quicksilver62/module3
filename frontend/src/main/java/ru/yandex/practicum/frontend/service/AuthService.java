@@ -9,8 +9,8 @@ import org.keycloak.admin.client.KeycloakBuilder;
 import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.frontend.clients.NotificationClient;
 import ru.yandex.practicum.frontend.config.KeycloakProperties;
+import ru.yandex.practicum.frontend.producer.NotificationProducer;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -24,7 +24,7 @@ public class AuthService {
 
     private final KeycloakProperties keycloakProperties;
     private Keycloak keycloak;
-    private NotificationClient notificationClient;
+    private final NotificationProducer notificationProducer;
 
     @PostConstruct
     public void init() {
@@ -102,7 +102,7 @@ public class AuthService {
         user.setAttributes(attributes);
 
         var result = keycloak.realm(keycloakProperties.getRealm()).users().create(user);
-        notificationClient.sendNotification("Регистрация прошла успешно");
+        notificationProducer.send("Регистрация прошла успешно");
 
         return result;
     }

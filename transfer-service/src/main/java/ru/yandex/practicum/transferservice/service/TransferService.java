@@ -6,9 +6,9 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.transferservice.client.AccountClient;
 import ru.yandex.practicum.transferservice.client.BlockerClient;
 import ru.yandex.practicum.transferservice.client.ExchangeClient;
-import ru.yandex.practicum.transferservice.client.NotificationClient;
 import ru.yandex.practicum.transferservice.model.Account;
 import ru.yandex.practicum.transferservice.model.TransferOperation;
+import ru.yandex.practicum.transferservice.producer.NotificationProducer;
 
 import java.util.UUID;
 
@@ -20,7 +20,7 @@ public class TransferService {
     private final AccountClient accountClient;
     private final BlockerClient blockerClient;
     private final ExchangeClient exchangeClient;
-    private final NotificationClient notificationClient;
+    private final NotificationProducer notificationProducer;
 
     public String transfer(TransferOperation transferOperation) {
         // Шаг 1: Проверка блокировки
@@ -75,7 +75,7 @@ public class TransferService {
             accountClient.updateAccount(targetAccount);
 
             // Шаг 8: Уведомление (последний неудаляемый шаг)
-            notificationClient.sendNotification("Переведено %s %s пользователю %s".formatted(
+            notificationProducer.send("Переведено %s %s пользователю %s".formatted(
                     transferOperation.value(), transferOperation.fromCurrency(), transferOperation.toLogin()));
 
             return "";
@@ -94,7 +94,7 @@ public class TransferService {
                 }
             } catch (Exception ex) {
                 log.error("Ошибка при откате транзакции {}: {}", transactionId, ex.getMessage());
-                notificationClient.sendNotification("Системная ошибка. Обратитесь в поддержку. ID: " + transactionId);
+                notificationProducer.send("Системная ошибка. Обратитесь в поддержку. ID: " + transactionId);
             }
 
             return "Произошла ошибка при выполнении транзакции. Изменения отменены.";

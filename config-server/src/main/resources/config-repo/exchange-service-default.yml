@@ -11,6 +11,17 @@ spring:
         jwt:
           issuer-uri: http://localhost:8082/realms/bank
 
+  kafka:
+    consumer:
+      enabled: true
+      bootstrap-server: localhost:9092
+      truststore-path: ${KAFKA_TRUST_STORE_PATH}
+      truststore-password: ${KAFKA_TRUST_STORE_PASSWORD}
+      keystore-path: ${KAFKA_KEY_STORE_PATH}
+      keystore-password: ${KAFKA_KEY_STORE_PASSWORD}
+      key-serializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-serializer: org.apache.kafka.common.serialization.StringDeserializer
+
 eureka:
   client:
     service-url:

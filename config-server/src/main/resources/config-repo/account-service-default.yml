@@ -28,6 +28,17 @@ spring:
         init:
           mode: always
 
+  kafka:
+    producer:
+      enabled: true
+      bootstrap-server: localhost:9092
+      truststore-path: ${KAFKA_TRUST_STORE_PATH}
+      truststore-password: ${KAFKA_TRUST_STORE_PASSWORD}
+      keystore-path: ${KAFKA_KEY_STORE_PATH}
+      keystore-password: ${KAFKA_KEY_STORE_PASSWORD}
+      key-serializer: org.apache.kafka.common.serialization.UUIDSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+
 eureka:
   client:
     service-url:

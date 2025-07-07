@@ -4,9 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.cashservice.client.AccountClient;
 import ru.yandex.practicum.cashservice.client.BlockerClient;
-import ru.yandex.practicum.cashservice.client.NotificationClient;
 import ru.yandex.practicum.cashservice.model.Account;
 import ru.yandex.practicum.cashservice.model.CashOperation;
+import ru.yandex.practicum.cashservice.producer.NotificationProducer;
 
 @Service
 @RequiredArgsConstructor
@@ -14,7 +14,7 @@ public class CashService {
 
     private final AccountClient accountClient;
     private final BlockerClient blockerClient;
-    private final NotificationClient notificationClient;
+    private final NotificationProducer notificationProducer;
 
     public String putCash(CashOperation cashOperation) {
         try {
@@ -24,9 +24,9 @@ public class CashService {
             Account account = accountClient.getAccount(cashOperation.currency().name());
             account.setValue(account.getValue() + cashOperation.value());
             accountClient.updateAccount(account);
-            notificationClient.sendNotification("Зачислено %s %s".formatted(cashOperation.value(), cashOperation.currency()));
+            notificationProducer.send("Зачислено %s %s".formatted(cashOperation.value(), cashOperation.currency()));
         } catch (Exception e) {
-            notificationClient.sendNotification("Произошла ошибка при выполнении транзакции");
+            notificationProducer.send("Произошла ошибка при выполнении транзакции");
         }
         return "";
     }
@@ -42,9 +42,9 @@ public class CashService {
             }
             account.setValue(account.getValue() - cashOperation.value());
             accountClient.updateAccount(account);
-            notificationClient.sendNotification("Снято %s %s".formatted(cashOperation.value(), cashOperation.currency()));
+            notificationProducer.send("Снято %s %s".formatted(cashOperation.value(), cashOperation.currency()));
         } catch (Exception e) {
-            notificationClient.sendNotification("Произошла ошибка при выполнении транзакции");
+            notificationProducer.send("Произошла ошибка при выполнении транзакции");
         }
         return "";
     }
