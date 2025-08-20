@@ -1,5 +1,7 @@
 package ru.yandex.practicum.accountservice.config;
 
+import brave.Tracer;
+import brave.Tracing;
 import feign.RequestInterceptor;
 import feign.codec.Decoder;
 import feign.codec.Encoder;
@@ -36,8 +38,14 @@ public class FeignConfig {
         new HttpMessageConverters(new MappingJackson2HttpMessageConverter());
 
     @Bean
-    public RequestInterceptor requestInterceptor() {
+    public RequestInterceptor requestInterceptor(Tracer tracer) {
         return template -> {
+            var span = tracer.currentSpan();
+            if (span != null) {
+                template.header("X-B3-TraceId", span.context().traceIdString());
+                template.header("X-B3-SpanId", span.context().spanIdString());
+            }
+
             OAuth2AccessToken accessToken = getAccessToken();
             if (accessToken != null) {
                 template.header("Authorization", "Bearer " + accessToken.getTokenValue());

@@ -37,6 +37,10 @@ dependencies {
 	implementation("com.fasterxml.jackson.core:jackson-databind:2.19.0")
 	implementation("org.springframework.security:spring-security-oauth2-client")
 	implementation("org.springframework.kafka:spring-kafka")
+	implementation("org.springframework.boot:spring-boot-starter-actuator")
+	implementation("io.micrometer:micrometer-registry-prometheus")
+	implementation("io.micrometer:micrometer-tracing-bridge-brave")
+	implementation("io.zipkin.reporter2:zipkin-reporter-brave")
 
 	compileOnly("org.projectlombok:lombok")
 

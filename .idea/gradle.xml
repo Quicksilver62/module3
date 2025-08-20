@@ -45,6 +45,14 @@
         </option>
       </GradleProjectSettings>
       <GradleProjectSettings>
+        <option name="externalProjectPath" value="$PROJECT_DIR$/exchange-generator" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$/exchange-generator" />
+          </set>
+        </option>
+      </GradleProjectSettings>
+      <GradleProjectSettings>
         <option name="externalProjectPath" value="$PROJECT_DIR$/exchange-service" />
         <option name="modules">
           <set>

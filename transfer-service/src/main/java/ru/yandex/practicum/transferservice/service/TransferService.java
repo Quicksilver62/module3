@@ -1,7 +1,8 @@
 package ru.yandex.practicum.transferservice.service;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.transferservice.client.AccountClient;
 import ru.yandex.practicum.transferservice.client.BlockerClient;
@@ -12,7 +13,6 @@ import ru.yandex.practicum.transferservice.producer.NotificationProducer;
 
 import java.util.UUID;
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
 public class TransferService {
@@ -21,6 +21,8 @@ public class TransferService {
     private final BlockerClient blockerClient;
     private final ExchangeClient exchangeClient;
     private final NotificationProducer notificationProducer;
+
+    private final Logger log = LoggerFactory.getLogger(TransferService.class);
 
     public String transfer(TransferOperation transferOperation) {
         // Шаг 1: Проверка блокировки
